@@ -3,41 +3,48 @@ class IoTDevice {
 // Constructor with configuration parameters, in order to connect with platform
     constructor(type,
                 id,
-                token) {
-
-        var Client = require("./lib/iot-nodejs");
-
-        const that = this;
-        const org = "hazv7k";
-        const authMethod = "token";
-
-        var config = {
-            "org" : org,
-            "id" : id,
-            "type" : type,
-            "auth-method" : authMethod,
-            "auth-token" : token
-        };
-
-        this._deviceClient = new Client.IotfDevice(config);
-        this._deviceClient.connect();
-        this._deviceClient.log.setLevel('trace');
-
-        this._deviceClient.on('connect', this.onConnect.bind(this));
-        this._deviceClient.on('command', this.onCommand.bind(this));
-    }
-    
-    onConnect() {
-        console.log("Connected device!");
-        this._deviceClient.publish("status","json",'{"d" : { "cpu" : 60, "mem" : 50 }}'); 
+                token,
+                deviceIP) {
+        this._type = type;
+        this._id = id;
+        this._token = token;
+        this._deviceIP = deviceIP;
     }
 
-    onCommand(commandName, format, payload, topic) {
+    connectDevice() {
+        const Device = require('./devices/wemo.js');
+        Device.connect(this, this._deviceIP);
+    }
+
+    onDeviceConnect(iotDevice) {
+        console.log("Successfully connected IoT device");
+        this._iotDevice = iotDevice;
+    }
+
+    onDeviceStateChange(value) {
+        console.log('Device turned %s', value === '1' ? 'on' : 'off');
+    }
+   
+    connectPlatform() {
+        const Platform = require('./platform/bluemix.js');
+        this._platform = Platform.connect(this, this._type, this._id, this_token);
+    }
+ 
+    onPlatformConnect() {
+        console.log("Connected device with platform!");
+        //this._deviceClient.publish("status","json",'{"d" : { "cpu" : 60, "mem" : 50 }}'); 
+    }
+
+    onPlatformCommand(commandName, format, payload, topic) {
         console.log("Received command:");
         console.log("   Name: " + commandName);
         console.log("   Format: " + format);
         console.log("   Payload: " + payload);
         console.log("   Topic: " + topic);   
+    }
+
+    onPlatformDisconnect() {
+        console.log("Disconnected from the platform");
     }
 
 }
