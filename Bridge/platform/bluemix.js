@@ -31,6 +31,7 @@ exports.connect = (that, config) => {
 
 // Using the "deviceClient", the "status" will be published to the BlueMix Platform
 exports.publishStatus = (deviceClient, status) => {
+    console.log("Publishing status: " + JSON.stringify(status));
     deviceClient.publish("status", 
                          "json",
                          JSON.stringify(status));

@@ -56,8 +56,8 @@ exports.toggle = (that) => {
     if(that._device && that._status.state != -1) {
         var newState = (that._status.state == 1 ? 0 : 1);
         console.log("New state: " + newState);
-        that._DeviceModule.updateState(that);
         that._device.setBinaryState(newState);
+        that._DeviceModule.updateState(that);
     } else {
         console.log("Unable to toggle state");
     } 

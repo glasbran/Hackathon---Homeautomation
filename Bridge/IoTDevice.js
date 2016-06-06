@@ -1,6 +1,6 @@
 class IoTDevice {
     
-// Constructor with configuration parameters, in order to connect with platform
+    // Constructor with configuration parameters, in order to connect with platform
     // @param config: A JSON configuration, as required by the device and platform modules.
     // @param device: The IoT device module suitable for this object.
     // @param platform: The IoT platform module suitable for this object.
@@ -10,7 +10,7 @@ class IoTDevice {
         this._config = config;
         this._DeviceModule = DeviceModule;
         this._PlatformModule = PlatformModule;
-        this._status = { connected: 0, state: -1 };
+        this._status = { connected: "0", state: "-1" };
     }
 
     // This function will connect the RPI with the platform first. After connecting to the platform, the device will be connected upon onPlatformConnected.
@@ -26,12 +26,12 @@ class IoTDevice {
     onDeviceConnect(iotDevice) {
         console.log("Successfully connected IoT device " + this._config.iotDeviceName);
         this._device = iotDevice;
-        this.setStatus(1, -1);
+        this.setStatus("1", "-1");
     }
 
     onDeviceStateChange(value) {
         console.log("Device " + this._config.iotDeviceName + " turned %s", value === '1' ? 'on' : 'off');
-        this.setStatus(1, value);
+        this.setStatus("1", value);
     }
    
     connectPlatform() {
