@@ -1,0 +1,10 @@
+[
+    {
+        "iotDeviceClass": "WEMO",
+        "iotDeviceIP": "192.168.10.50",
+        "platformClass": "BLUEMIX",
+        "platformId": "Belkin_Switch_1",
+        "platformDeviceType": "Belkin_Switch",
+        "platformToken": "Belkin_Switch_1_Token"
+    }
+]
