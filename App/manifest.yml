@@ -1,0 +1,11 @@
+---
+applications:
+- path: target/JavaHelloWorldApp.war
+  memory: 512M
+  instances: 1
+  domain: mybluemix.net
+  name: Home-Automation-HHZ
+  host: hahhz
+  disk_quota: 1024M
+  services:
+  - Internet of Things Platform-d4
