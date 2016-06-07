@@ -1,6 +1,6 @@
 ---
 applications:
-- path: target/JavaHelloWorldApp.war
+- path: target/HomeAutomation.war
   memory: 512M
   instances: 1
   domain: mybluemix.net

@@ -12,11 +12,21 @@
 	<table>
 		<tr>
 			<td>	
-			<p>Light 1 Status: ${message}</p>
+			<p id="status">Status Device 1: ${message}</p>
 			<form action="SimpleServlet" method=get>
-				<input type="submit" name="light_1" value="on"/>
-				<input type="submit" name="light_1" value="off"/>
-				<input type="submit" name="light_1" value="update"/>
+				<input type="submit" name="switch_1" value="Toggle"/>
+				<!-- <input type="submit" name="light_1" value="off"/> -->
+				<input type="submit" name="switch_1" value="Update"/>
+			</form>		
+			</td>
+		</tr>
+		<tr>
+			<td>	
+			<p id="status_2">Status Device 2: ${message_2}</p>
+			<form action="SimpleServlet" method=get>
+				<input type="submit" name="switch_2" value="Toggle"/>
+				<!-- <input type="submit" name="light_1" value="off"/> -->
+				<input type="submit" name="switch_2" value="Update"/>
 			</form>		
 			</td>
 		</tr>
