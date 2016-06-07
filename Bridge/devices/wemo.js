@@ -2,8 +2,8 @@
 
 // Events will be emitted to "onDeviceConnect" and "onDeviceStateChange"
 
-// This function connects the device specified by its IP to "that".
-exports.connect = (that, deviceIP) => {
+// @param config: The configuration, containing at least the key 'iotDeviceIP'
+exports.connect = (that, config) => {
     var Wemo = require('wemo-client');
     var wemo = new Wemo();
 
@@ -14,25 +14,31 @@ exports.connect = (that, deviceIP) => {
     var start = 49150;
     var end = 49160;
     var timeout = 2000;
-
+   
     while (start <= end) {
     
         var currentPort = start;
     
         (function(currentPort) {
-            console.log('Checking: ' + port);
+            console.log('Checking: ' + currentPort);
             var s = new net.Socket();
         
-            s.setTimeout(timeout, function() { s.destroy(); });
-            s.connect(currentPort, host, function() {
+            s.setTimeout(timeout, function() { 
+                // console.log("Timeout on port " + currentPort);
+                s.destroy(); 
+            });
+
+            s.connect(currentPort, config.iotDeviceIP, function() {
                 console.log('OPEN: ' + currentPort);
                 // Connect to device
-                wemo.load("http://" + deviceIP + ":" + currentPort + "/setup.xml", (deviceInfo) => {
-                    console.log("Wemo Device found: %j", deviceInfo);
-
+                console.log("Loading device...");
+                wemo.load("http://" + config.iotDeviceIP + ":" + currentPort + "/setup.xml", (deviceInfo) => {
+                    console.log("Wemo Device found: " + deviceInfo.friendlyName);
+                        
                     var client = wemo.client(deviceInfo); 
                     that.onDeviceConnect(client);
-                    client.on('binaryState', that.onDeviceStateChange.bind(that));
+                    client.on('binaryState', (value) => { that.onDeviceStateChange(value); });
+                    client.on('error', (err) => { console.log(err); });
                 });
             });
         
@@ -44,4 +50,27 @@ exports.connect = (that, deviceIP) => {
     
         start++;
     }
+}
+
+exports.toggle = (that) => {
+    if(that._device && that._status.state != -1) {
+        var newState = (that._status.state == 1 ? 0 : 1);
+        console.log("New state: " + newState);
+        that._device.setBinaryState(newState);
+        that._DeviceModule.updateState(that);
+    } else {
+        console.log("Unable to toggle state");
+    } 
+}
+
+exports.updateState = (that) => {
+    if(that._device) {
+        that._device.getBinaryState((err, state) => {
+            if(err) {
+                console.log("Unable to update state: " + err);
+            } else {
+                that.onDeviceStateChange(state);
+            }
+        });
+    } 
 }
